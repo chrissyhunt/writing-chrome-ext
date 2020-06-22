@@ -1,0 +1,9 @@
+{
+  "manifest_version": 2,
+  "name": "Write Now",
+  "description": "A writing prompt extension",
+  "version": "1.0",
+  "chrome_url_overrides": {
+    "newtab": "prompt.html"
+  }
+}

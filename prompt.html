@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Write Now!</title>
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre-icons.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header>
+      <span class="label label-primary">Today's Prompt</span>
+      <h2 id="prompt"></h2>
+      <div class="form-group">
+        I'm in the mood for something...
+        <label class="form-radio form-inline">
+          <input type="radio" name="prompt-type"><i class="form-icon"></i> Serious
+        </label>
+        <label class="form-radio form-inline">
+          <input type="radio" name="prompt-type"><i class="form-icon"></i> Silly
+        </label>
+        <label class="form-radio form-inline">
+          <input type="radio" name="prompt-type"><i class="form-icon"></i> Surprise me!
+        </label>
+        <button class="btn btn-primary"><i class="icon icon-refresh"></i></button>
+      </div>
+    </header>
+
+    <main>
+      <div contenteditable id="editor">
+        <span id="placeholder">
+          Just start typing... <span class="blinking-cursor">|</span>
+        </span>
+      </div>
+    </main>
+
+    <footer>
+      <div class="bar bar-sm">
+        <div class="bar-item tooltip" role="progressbar" style="width:25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" data-tooltip="1000 out of 100000 words in June!"></div>
+      </div>
+    </footer>
+  </body>
+  <script type="text/javascript" src="js/prompt.js"></script>
+</html>

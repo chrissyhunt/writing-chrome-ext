@@ -1,0 +1,26 @@
+{
+  "name": "writing-chrome-ext",
+  "version": "1.0.0",
+  "description": "Chrome extension to generate writing prompts",
+  "main": "prompt.html",
+  "scripts": {
+    "dev": "parcel prompt.html --open",
+    "build-chrome": "parcel build prompt.html --out-dir build-chrome && cp chrome/manifest.json build-chrome/manifest.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chrissyhunt87/writing-chrome-ext.git"
+  },
+  "author": "chrissy.hunt@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chrissyhunt87/writing-chrome-ext/issues"
+  },
+  "homepage": "https://github.com/chrissyhunt87/writing-chrome-ext#readme",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4"
+  },
+  "dependencies": {
+    "sentencer": "^0.2.1"
+  }
+}
