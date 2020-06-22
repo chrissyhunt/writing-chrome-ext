@@ -60,32 +60,56 @@ function getPromptSentence() {
   return sentence;
 };
 
-function handleEditorFocus() {
+document.addEventListener('DOMContentLoaded', function() {
   var editor = document.getElementById('editor');
   var placeholder = document.getElementById('placeholder');
-  if (placeholder) {
-    editor.removeChild(placeholder);
-    editor.focus();
-  }
-};
+  var promptTypeRadios = document.querySelectorAll('input[name="prompt-type"]');
+  var getPromptBtn = document.getElementById('get-prompt');
 
-function handleEditorBlur() {
-  var editor = document.getElementById('editor');
-  if (editor.innerHTML) {
-    console.log(editor.innerHTML)
-  } else {
-    var placeholder = '<span id="placeholder">Just start typing... <span class="blinking-cursor">|</span></span>';
-    editor.appendChild(placeholder);
-  }
-};
+  function handleEditorFocus() {
+    if (placeholder) {
+      editor.removeChild(placeholder);
+      editor.focus();
+    }
+  };
+  
+  function handleEditorBlur() {
+    if (editor.innerHTML) {
+      console.log(editor.innerHTML)
+    } else {
+      var placeholderContent = '<span id="placeholder">Just start typing... <span class="blinking-cursor">|</span></span>';
+      editor.appendChild(placeholderContent);
+    }
+  };
 
-document.addEventListener('DOMContentLoaded', function() {
+  function persistPromptPreference() {
+    localStorage.setItem('wn-prompt-pref', this.value);
+  }
+
+  function setPromptFromStorage() {
+    var pref = localStorage.getItem('wn-prompt-pref');
+    if (pref) {
+      document.querySelector(`input[value=${pref}]`).setAttribute('checked', true);
+    }
+  }
+
+  function refreshPrompt() {
+    var promptSentence = getPromptSentence();
+    var prompt = document.getElementById('prompt');
+    prompt.innerHTML = promptSentence;
+  }
+
+  // get saved preferences
+  setPromptFromStorage();
+
   // set up prompt
-  var promptSentence = getPromptSentence();
-  var prompt = document.getElementById('prompt');
-  prompt.innerHTML = promptSentence;
+  refreshPrompt();
 
-  var editor = document.getElementById('editor');
+  // persist prompt preference
+  for (i = 0; i < promptTypeRadios.length; i++) {
+    promptTypeRadios[i].addEventListener('click', persistPromptPreference);
+  }
   editor.addEventListener('focus', handleEditorFocus);
   editor.addEventListener('blur', handleEditorBlur);
+  getPromptBtn.addEventListener('click', refreshPrompt);
 });

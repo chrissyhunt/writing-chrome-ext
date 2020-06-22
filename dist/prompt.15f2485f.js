@@ -98920,39 +98920,62 @@ function getPromptSentence() {
 }
 
 ;
-
-function handleEditorFocus() {
+document.addEventListener('DOMContentLoaded', function () {
   var editor = document.getElementById('editor');
   var placeholder = document.getElementById('placeholder');
+  var promptTypeRadios = document.querySelectorAll('input[name="prompt-type"]');
+  var getPromptBtn = document.getElementById('get-prompt');
 
-  if (placeholder) {
-    editor.removeChild(placeholder);
-    editor.focus();
+  function handleEditorFocus() {
+    if (placeholder) {
+      editor.removeChild(placeholder);
+      editor.focus();
+    }
   }
-}
 
-;
+  ;
 
-function handleEditorBlur() {
-  var editor = document.getElementById('editor');
-
-  if (editor.innerHTML) {
-    console.log(editor.innerHTML);
-  } else {
-    var placeholder = '<span id="placeholder">Just start typing... <span class="blinking-cursor">|</span></span>';
-    editor.appendChild(placeholder);
+  function handleEditorBlur() {
+    if (editor.innerHTML) {
+      console.log(editor.innerHTML);
+    } else {
+      var placeholderContent = '<span id="placeholder">Just start typing... <span class="blinking-cursor">|</span></span>';
+      editor.appendChild(placeholderContent);
+    }
   }
-}
 
-;
-document.addEventListener('DOMContentLoaded', function () {
-  // set up prompt
-  var promptSentence = getPromptSentence();
-  var prompt = document.getElementById('prompt');
-  prompt.innerHTML = promptSentence;
-  var editor = document.getElementById('editor');
+  ;
+
+  function persistPromptPreference() {
+    localStorage.setItem('wn-prompt-pref', this.value);
+  }
+
+  function setPromptFromStorage() {
+    var pref = localStorage.getItem('wn-prompt-pref');
+
+    if (pref) {
+      document.querySelector("input[value=".concat(pref, "]")).setAttribute('checked', true);
+    }
+  }
+
+  function refreshPrompt() {
+    var promptSentence = getPromptSentence();
+    var prompt = document.getElementById('prompt');
+    prompt.innerHTML = promptSentence;
+  } // get saved preferences
+
+
+  setPromptFromStorage(); // set up prompt
+
+  refreshPrompt(); // persist prompt preference
+
+  for (i = 0; i < promptTypeRadios.length; i++) {
+    promptTypeRadios[i].addEventListener('click', persistPromptPreference);
+  }
+
   editor.addEventListener('focus', handleEditorFocus);
   editor.addEventListener('blur', handleEditorBlur);
+  getPromptBtn.addEventListener('click', refreshPrompt);
 });
 },{"sentencer":"node_modules/sentencer/index.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
@@ -98982,7 +99005,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49484" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "52022" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
