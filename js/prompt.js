@@ -6,11 +6,21 @@ function getRandomInt(max) {
 
 var sillyPrompts = [
   "Once upon a time, {{ an_actor }} walked out of the house to find {{ a_noun }}.",
-  "One time, long ago, {{ an_actor }}...",
+  "Long ago, {{ an_actor }}...",
+  "It was raining, and the {{ actor }} was sad.",
+  "If she could just reach the {{ noun }}, it would be the best day EVER.",
 ];
 
 var seriousPrompts = [
   "Write about a time when you couldn't be with someone you loved.",
+  "Describe your first kiss.",
+  "All the little things you remember about the best summer of your life.",
+  "Your first memory.",
+  "What word do you hate the most?",
+  "What word do you love the most?",
+  "Describe your favorite item of clothing.",
+  "Imagine the life your favorite possession had before it came to you.",
+  "Imagine one moment when your mother felt exactly like you do right now.",
 ];
 
 var allPrompts = sillyPrompts.concat(seriousPrompts);
@@ -55,9 +65,25 @@ Sentencer.configure({
   }
 });
 
-function getPromptSentence() {
-  var sentence = Sentencer.make("Once upon a time, {{ an_actor }} walked out of the house to find {{ a_noun }}.");
-  return sentence;
+function getPromptSentence(pref) {
+  switch (pref) {
+    case 'silly': {
+      var randomIndex = getRandomInt(sillyPrompts.length);
+      var sentence = Sentencer.make(sillyPrompts[randomIndex]);
+      return sentence;
+    }
+    case 'serious': {
+      var randomIndex = getRandomInt(seriousPrompts.length);
+      var sentence = Sentencer.make(seriousPrompts[randomIndex]);
+      return sentence;
+    }
+    case 'all':
+    default: {
+      var randomIndex = getRandomInt(allPrompts.length);
+      var sentence = Sentencer.make(allPrompts[randomIndex]);
+      return sentence;
+    }
+  }
 };
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -86,21 +112,24 @@ document.addEventListener('DOMContentLoaded', function() {
     localStorage.setItem('wn-prompt-pref', this.value);
   }
 
-  function setPromptFromStorage() {
+  function setPromptPreferenceFromStorage() {
     var pref = localStorage.getItem('wn-prompt-pref');
     if (pref) {
       document.querySelector(`input[value=${pref}]`).setAttribute('checked', true);
+    } else {
+      document.querySelector('input[value=all').setAttribute('checked', true);
     }
   }
 
   function refreshPrompt() {
-    var promptSentence = getPromptSentence();
+    var preference = localStorage.getItem('wn-prompt-pref');
+    var promptSentence = getPromptSentence(preference);
     var prompt = document.getElementById('prompt');
     prompt.innerHTML = promptSentence;
   }
 
   // get saved preferences
-  setPromptFromStorage();
+  setPromptPreferenceFromStorage();
 
   // set up prompt
   refreshPrompt();
