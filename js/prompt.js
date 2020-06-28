@@ -9,6 +9,7 @@ var sillyPrompts = [
   "Long ago, {{ an_actor }}...",
   "It was raining, and the {{ actor }} was sad.",
   "If she could just reach the {{ noun }}, it would be the best day EVER.",
+  "{{ a_noun }}, {{ a_noun }}, {{ a_noun }}.",
 ];
 
 var seriousPrompts = [
@@ -25,6 +26,24 @@ var seriousPrompts = [
 
 var allPrompts = sillyPrompts.concat(seriousPrompts);
 
+var timePeriods = [
+  "Victorian era",
+  "Jurassic era",
+  "Paleolithic era",
+  "Sixties",
+  "Seventies",
+  "Eightees",
+  "Roaring Twenties",
+  "Great Depression",
+  "Dark Ages",
+  "Renaissance",
+  "Roman Empire",
+  "Classical era",
+  "ancient world",
+  "prehistoric world",
+  "Age of Pharaohs",
+];
+
 var actors = [
   'man',
   'woman',
@@ -40,6 +59,11 @@ var actors = [
   'frog that was secretly a prince',
 ];
 
+function getEra() {
+  var randomIndex = getRandomIndex(timePeriods.length);
+  return timePeriods[randomIndex];
+};
+
 function getActor() {
   var randomIndex = getRandomInt(actors.length);
   return actors[randomIndex];
@@ -54,7 +78,7 @@ function getOne(getFn) {
     item = 'a ' + item;
   }
   return item;
-}
+};
 
 Sentencer.configure({
   actions: {
@@ -62,6 +86,7 @@ Sentencer.configure({
     an_actor: function() {
       return getOne(getActor);
     },
+    era: getEra,
   }
 });
 
@@ -88,29 +113,20 @@ function getPromptSentence(pref) {
 
 document.addEventListener('DOMContentLoaded', function() {
   var editor = document.getElementById('editor');
-  var placeholder = document.getElementById('placeholder');
   var promptTypeRadios = document.querySelectorAll('input[name="prompt-type"]');
   var getPromptBtn = document.getElementById('get-prompt');
+  var wordCount = document.getElementById('wordcount');
+  var saveToEmailBtn = document.getElementById('save-to-email');
+  var rememberEmail =  document.getElementById('remember-email');
 
-  function handleEditorFocus() {
-    if (placeholder) {
-      editor.removeChild(placeholder);
-      editor.focus();
-    }
-  };
-  
-  function handleEditorBlur() {
-    if (editor.innerHTML) {
-      console.log(editor.innerHTML)
-    } else {
-      var placeholderContent = '<span id="placeholder">Just start typing... <span class="blinking-cursor">|</span></span>';
-      editor.appendChild(placeholderContent);
-    }
+  function updateWordCount() {
+    var words = editor.innerText.replace(/\n/g, ' ').split(' ').filter(w => w.length);
+    wordCount.innerText = words.length;
   };
 
   function persistPromptPreference() {
     localStorage.setItem('wn-prompt-pref', this.value);
-  }
+  };
 
   function setPromptPreferenceFromStorage() {
     var pref = localStorage.getItem('wn-prompt-pref');
@@ -119,26 +135,77 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
       document.querySelector('input[value=all').setAttribute('checked', true);
     }
-  }
+  };
+
+  function setEmailFromStorage() {
+    var email = localStorage.getItem('wn-email');
+    if (email) {
+      var emailInput = document.getElementById('email');
+      emailInput.value = email;
+      rememberEmail.setAttribute('checked', true);
+    }
+  };
 
   function refreshPrompt() {
     var preference = localStorage.getItem('wn-prompt-pref');
     var promptSentence = getPromptSentence(preference);
     var prompt = document.getElementById('prompt');
     prompt.innerHTML = promptSentence;
+  };
+
+  function handleRememberEmail() {
+    var targetEmail = document.getElementById('email').value;
+    if (rememberEmail.checked && targetEmail) {
+      localStorage.setItem('wn-email', targetEmail);
+    } else if (!rememberEmail.checked) {
+      localStorage.removeItem('wn-email');
+    }
   }
+
+  function handleEditorChange() {
+    updateWordCount();
+  };
+
+  function handleSaveToEmail() {
+    // get email values
+    var targetEmail = document.getElementById('email').value;
+    var emailBody = editor.innerHTML.replace(/(<([^>]+)>)/ig, '%0D%0A')
+    emailBody = emailBody.replace(/ /ig, '%20');
+    console.log(emailBody)
+
+    // create email content and simulate click
+    var emailLink = document.createElement('a');
+    emailLink.setAttribute('href', `mailto:${targetEmail}?body=${emailBody}`);
+    emailLink.setAttribute('id', 'hiddenEmailBtn');
+    emailLink.setAttribute('target', '_blank');
+    emailLink.classList.add('hidden');
+    document.body.appendChild(emailLink);
+    var hiddenEmailBtn = document.getElementById('hiddenEmailBtn');
+    hiddenEmailBtn.click();
+    document.body.removeChild(hiddenEmailBtn);
+  };
 
   // get saved preferences
   setPromptPreferenceFromStorage();
+  setEmailFromStorage();
 
   // set up prompt
   refreshPrompt();
+
+  // set initial wordcount
+  updateWordCount();
+
+  // focus on editor
+  editor.focus();
 
   // persist prompt preference
   for (i = 0; i < promptTypeRadios.length; i++) {
     promptTypeRadios[i].addEventListener('click', persistPromptPreference);
   }
-  editor.addEventListener('focus', handleEditorFocus);
-  editor.addEventListener('blur', handleEditorBlur);
+
+  // event listeners
+  editor.addEventListener('input', handleEditorChange);
   getPromptBtn.addEventListener('click', refreshPrompt);
+  saveToEmailBtn.addEventListener('click', handleSaveToEmail);
+  rememberEmail.addEventListener('change', handleRememberEmail);
 });

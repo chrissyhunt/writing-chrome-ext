@@ -28,6 +28,12 @@ main {
   padding: 0 10vw;
 }
 
+footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 #editor {
   width: 100%;
   padding: 1em;
@@ -42,6 +48,11 @@ main {
   font-style:italic;
 }
 
+.progress {
+  font-size: 0.8em;
+  width: 80%;
+}
+
 .blinking-cursor {
   color: black;
   font-size: 1.2em;
@@ -51,6 +62,11 @@ main {
   -ms-animation: 1s blink step-end infinite;
   -o-animation: 1s blink step-end infinite;
   animation: 1s blink step-end infinite;
+}
+
+.hidden {
+  display: none;
+  visibility: hidden;
 }
 
 @keyframes blink {
