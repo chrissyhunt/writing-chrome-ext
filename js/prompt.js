@@ -118,6 +118,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var wordCount = document.getElementById('wordcount');
   var saveToEmailBtn = document.getElementById('save-to-email');
   var rememberEmail =  document.getElementById('remember-email');
+  var prompt = document.getElementById('prompt');
 
   function updateWordCount() {
     var words = editor.innerText.replace(/\n/g, ' ').split(' ').filter(w => w.length);
@@ -149,7 +150,6 @@ document.addEventListener('DOMContentLoaded', function() {
   function refreshPrompt() {
     var preference = localStorage.getItem('wn-prompt-pref');
     var promptSentence = getPromptSentence(preference);
-    var prompt = document.getElementById('prompt');
     prompt.innerHTML = promptSentence;
   };
 
@@ -166,15 +166,21 @@ document.addEventListener('DOMContentLoaded', function() {
     updateWordCount();
   };
 
+  function processStringForEmail(rawValue) {
+    var processedValue = rawValue.replace(/(<([^>]+)>)/ig, '%0D%0A');
+    processedValue = processedValue.replace(/ /ig, '%20');
+    return processedValue;
+  }
+
   function handleSaveToEmail() {
     // get email values
     var targetEmail = document.getElementById('email').value;
-    var emailBody = editor.innerHTML.replace(/(<([^>]+)>)/ig, '%0D%0A')
-    emailBody = emailBody.replace(/ /ig, '%20');
+    var emailSubject = new Date().toLocaleDateString() + ': ' + processStringForEmail(prompt.innerHTML);
+    var emailBody = processStringForEmail(editor.innerHTML);
 
     // create email content and simulate click
     var emailLink = document.createElement('a');
-    emailLink.setAttribute('href', `mailto:${targetEmail}?subject=Writing&body=${emailBody}`);
+    emailLink.setAttribute('href', `mailto:${targetEmail}?subject=${emailSubject}&body=${emailBody}`);
     emailLink.setAttribute('id', 'hiddenEmailBtn');
     emailLink.setAttribute('target', '_blank');
     emailLink.classList.add('hidden');
