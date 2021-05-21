@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (pref) {
       document.querySelector(`input[value=${pref}]`).setAttribute('checked', true);
     } else {
-      document.querySelector('input[value=all').setAttribute('checked', true);
+      document.querySelector('input[value=all]').setAttribute('checked', true);
     }
   };
 
@@ -171,11 +171,10 @@ document.addEventListener('DOMContentLoaded', function() {
     var targetEmail = document.getElementById('email').value;
     var emailBody = editor.innerHTML.replace(/(<([^>]+)>)/ig, '%0D%0A')
     emailBody = emailBody.replace(/ /ig, '%20');
-    console.log(emailBody)
 
     // create email content and simulate click
     var emailLink = document.createElement('a');
-    emailLink.setAttribute('href', `mailto:${targetEmail}?body=${emailBody}`);
+    emailLink.setAttribute('href', `mailto:${targetEmail}?subject=Writing&body=${emailBody}`);
     emailLink.setAttribute('id', 'hiddenEmailBtn');
     emailLink.setAttribute('target', '_blank');
     emailLink.classList.add('hidden');
