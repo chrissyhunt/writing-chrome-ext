@@ -5,17 +5,10 @@ body {
   flex-direction: column;
 }
 
-header, footer {
-  padding: 1em 10vw;
-}
-
 header {
-  flex: 2;
-  background-color: ghostwhite;
-}
-
-footer {
   flex: 1;
+  background-color: ghostwhite;
+  padding: 1em 10vw;
 }
 
 header > * {
@@ -23,18 +16,29 @@ header > * {
 }
 
 main {
-  height: 80vh;
+  height: 90vh;
   overflow: hidden;
   padding: 0 10vw;
 }
 
-footer {
+section {
+  flex: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 0.5em 10vw;
+}
+
+footer {
+  padding: 1em 10vw;
+  font-size: 0.8em;
+  text-align: center;
 }
 
 #editor {
+  resize: none;
+  border: none;
+  height: 100%;
   width: 100%;
   padding: 1em;
   overflow-y: scroll;
@@ -62,6 +66,23 @@ footer {
   -ms-animation: 1s blink step-end infinite;
   -o-animation: 1s blink step-end infinite;
   animation: 1s blink step-end infinite;
+}
+
+.wordcount .avatar {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  width: auto;
+  min-width: 1.6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin-right: 8px;
+}
+
+#wordcount-progress {
+  margin-bottom: 1em;
 }
 
 .hidden {
