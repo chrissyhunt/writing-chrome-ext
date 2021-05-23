@@ -2,6 +2,7 @@ export function manageEmail() {
   const editor = document.getElementById('editor');
   const prompt = document.getElementById('prompt');
   const saveToEmailBtn = document.getElementById('save-to-email');
+  const saveToFileBtn = document.getElementById('save-to-file');
   const rememberEmail =  document.getElementById('remember-email');
 
   function setEmailFromStorage() {
@@ -28,6 +29,34 @@ export function manageEmail() {
     return processedValue;
   };
 
+  function makeTextFile(text) {
+    const title = prompt.innerText + '\n';
+    const date = new Date().toLocaleDateString() + '\n\n';
+    const data = new Blob([title, date, text], { type: 'text/plain' });
+
+    if (textFile !== null) {
+      window.URL.revokeObjectURL(textFile);
+    }
+
+    const textFile = window.URL.createObjectURL(data);
+
+    return textFile;
+  };
+
+  function handleSaveTextToFile() {
+    const date = new Date();
+    const fileName = `prompt-${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    const textFile = makeTextFile(editor.value);
+
+    const link = document.createElement('a');
+    link.href = textFile;
+    link.download = fileName;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   function handleSaveToEmail() {
     // get email values
     const targetEmail = document.getElementById('email').value;
@@ -51,5 +80,6 @@ export function manageEmail() {
 
   // event listeners
   saveToEmailBtn.addEventListener('click', handleSaveToEmail);
+  saveToFileBtn.addEventListener('click', handleSaveTextToFile);
   rememberEmail.addEventListener('change', handleRememberEmail);
 };
